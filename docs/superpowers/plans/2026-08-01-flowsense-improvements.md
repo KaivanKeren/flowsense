@@ -33,7 +33,7 @@
 - Consumes: nothing.
 - Produces: importable `flowsense` package; gitignore rules; env template. Later tasks fill package modules.
 
-- [ ] **Step 1: Create the package directory and `__init__.py`**
+- [x] **Step 1: Create the package directory and `__init__.py`**
 
 Create `flowsense/__init__.py` with:
 
@@ -42,7 +42,7 @@ Create `flowsense/__init__.py` with:
 __version__ = "0.2.0"
 ```
 
-- [ ] **Step 2: Create `.gitignore`**
+- [x] **Step 2: Create `.gitignore`**
 
 ```gitignore
 __pycache__/
@@ -53,7 +53,7 @@ data/*.jsonl
 data/frame_test.jpg
 ```
 
-- [ ] **Step 3: Create `.env.example`**
+- [x] **Step 3: Create `.env.example`**
 
 ```
 # Copy this file to .env and fill in the real values.
@@ -68,7 +68,7 @@ FLOWSENSE_INTERVAL=2
 FLOWSENSE_MODEL=yolo11n.pt
 ```
 
-- [ ] **Step 4: Write the smoke test**
+- [x] **Step 4: Write the smoke test**
 
 Create `tests/test_smoke.py`:
 
@@ -80,17 +80,17 @@ def test_package_imports():
     assert hasattr(flowsense, "__version__")
 ```
 
-- [ ] **Step 5: Run the test**
+- [x] **Step 5: Run the test**
 
 Run: `python -m pytest tests/test_smoke.py -v`
 Expected: 1 passed.
 
-- [ ] **Step 6: Verify `.env` is ignored**
+- [x] **Step 6: Verify `.env` is ignored**
 
 Run: `git check-ignore .env`
 Expected: `.env` is printed (proves the gitignore rule works).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add flowsense/__init__.py .gitignore .env.example tests/test_smoke.py
@@ -109,7 +109,7 @@ git commit -m "chore: add flowsense package skeleton, gitignore, and env templat
 - Consumes: nothing (stdlib only).
 - Produces: `Config` frozen dataclass with fields `api_url: str`, `api_key: str`, `api_timeout: float`, `api_retries: int`, `api_backoff: float`, `min_conf: float`, `interval: float`, `model_path: str`, `base_dir: Path`, plus properties `rois_path: Path` and `data_dir: Path`; function `load_config(env_path: Path = DEFAULT_ENV_PATH) -> Config`. Env vars are `FLOWSENSE_API_KEY`, `FLOWSENSE_API_URL`, `FLOWSENSE_API_TIMEOUT`, `FLOWSENSE_API_RETRIES`, `FLOWSENSE_API_BACKOFF`, `FLOWSENSE_MIN_CONF`, `FLOWSENSE_INTERVAL`, `FLOWSENSE_MODEL`. Real environment variables take precedence over `.env` values.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_config.py`:
 
@@ -156,12 +156,12 @@ def test_env_beats_dotenv(tmp_path, monkeypatch):
     assert cfg.api_key == "real-secret"
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_config.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.config'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/config.py`:
 
@@ -222,12 +222,12 @@ def load_config(env_path: Path = DEFAULT_ENV_PATH) -> Config:
     )
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_config.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/config.py tests/test_config.py
@@ -249,7 +249,7 @@ git commit -m "feat: add env/.env config module and move API key out of source"
   - `point_in_poly(pt: tuple, poly: list) -> bool` — True if `pt` is on/inside `poly`.
   - `lane_from_detection(bbox: list[float], lanes: dict) -> str | None` — bottom-center of `bbox` (`[x1, y1, x2, y2]`) mapped to the containing lane, else `None`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_lanes.py`:
 
@@ -296,12 +296,12 @@ def test_load_rois_known_camera(tmp_path):
     assert load_rois(p, "30") == {"kota": [[0, 0], [1, 0], [1, 1]]}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_lanes.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.lanes'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/lanes.py`:
 
@@ -337,12 +337,12 @@ def lane_from_detection(bbox, lanes) -> Optional[str]:
     return None
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_lanes.py -v`
 Expected: 6 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/lanes.py tests/test_lanes.py
@@ -363,7 +363,7 @@ git commit -m "feat: extract lane ROI loading and lane mapping into flowsense.la
   - `fetch_cameras(cfg: Config, session=None) -> list[dict]` — GET `cfg.api_url` with header `X-SDC: cfg.api_key`; validates `data["success"]`; retries up to `cfg.api_retries` with exponential backoff `backoff * 2**attempt`; raises `RuntimeError` when exhausted. `session` must expose `get(url, **kwargs)`; defaults to the `requests` module.
   - `find_camera(cameras: list[dict], name: str | None = None, cam_id: int | str | None = None) -> dict` — by id or case-insensitive name substring; raises `RuntimeError` on no match; raises if neither given.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_api.py`:
 
@@ -455,12 +455,12 @@ def test_find_camera_errors():
         find_camera(cameras)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_api.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.api'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/api.py`:
 
@@ -512,12 +512,12 @@ def find_camera(cameras, name: Optional[str] = None, cam_id=None) -> dict:
     raise RuntimeError("Provide a camera name or id")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_api.py -v`
-Expected: 7 passed.
+Expected: 6 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/api.py tests/test_api.py
@@ -538,7 +538,7 @@ git commit -m "feat: add retrying Kudus API client with injectable session"
   - `setup_logging(level: str = "INFO", json_output: bool = True) -> logging.Logger` — returns the `"flowsense"` logger with a single stdout handler (idempotent).
   - `JsonFormatter(logging.Formatter)` — one JSON object per line with keys `ts`, `level`, `logger`, `msg`, plus any of `camera_id`, `camera`, `lane`, `event`, `frame`, `url`, `attempt` set as `LogRecord` attributes, plus `exc` when exceptions are logged.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_telemetry.py`:
 
@@ -573,12 +573,12 @@ def test_setup_logging_is_idempotent():
     assert len(logger.handlers) == 1
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_telemetry.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.telemetry'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/telemetry.py`:
 
@@ -617,12 +617,12 @@ def setup_logging(level: str = "INFO", json_output: bool = True) -> logging.Logg
     return logger
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_telemetry.py -v`
 Expected: 3 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/telemetry.py tests/test_telemetry.py
@@ -645,7 +645,7 @@ git commit -m "feat: add structured JSON logging via flowsense.telemetry"
   - `summarize_frame(results, lanes, min_conf: float = 0.35) -> dict` — returns `{"total_vehicles": int, "per_lane": dict[str, int], "vehicles": list[dict]}`. Each vehicle dict: `{"bbox", "cls", "type", "conf", "lane"}`. Filters non-vehicle classes and `conf < min_conf`.
   - `track_summary(results, lanes, min_conf: float = 0.35) -> tuple[list[dict], list[tuple[int, str]]]` — same vehicle dicts plus `"track_id"`, and returns `(dets, [(track_id, lane)])` pairs for tracked boxes only (`box.id is not None`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_detector.py`:
 
@@ -709,12 +709,12 @@ def test_track_summary_emits_pairs():
     assert dets[2]["lane"] is None
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_detector.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.detector'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/detector.py`:
 
@@ -797,17 +797,17 @@ def track_summary(results, lanes, min_conf: float = 0.35) -> Tuple[List[dict], L
     return dets, pairs
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_detector.py -v`
-Expected: 5 passed (4 summarize + 1 track).
+Expected: 4 passed (3 summarize + 1 track).
 
-- [ ] **Step 5: Verify ultralytics stays lazy**
+- [x] **Step 5: Verify ultralytics stays lazy**
 
 Run: `python -c "import flowsense.detector; print('no-ultralytics-import-ok')"`
 Expected: prints `no-ultralytics-import-ok` (no `ModuleNotFoundError` even though ultralytics isn't installed).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add flowsense/detector.py tests/test_detector.py
@@ -831,7 +831,7 @@ git commit -m "feat: extract YOLO detection and frame summarization into flowsen
     - `snapshot(self) -> dict[str, int]` — current cumulative counts.
     - `reset(self)` — clears all state.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_counter.py`:
 
@@ -864,12 +864,12 @@ def test_reset_clears_state():
     assert c.update([(1, "kota")]) == {"kota": 1}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_counter.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.counter'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/counter.py`:
 
@@ -904,12 +904,12 @@ class TrackingCounter:
         self._seen = set()
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_counter.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/counter.py tests/test_counter.py
@@ -933,7 +933,7 @@ git commit -m "feat: add TrackingCounter for unique lane-crossing counts"
     - `read(self) -> tuple[bool, frame | None]` — reads; on read failure reopens with `backoff` sleep up to `max_reconnects` times, then returns `(False, None)`.
     - `release(self)` — releases the underlying capture (idempotent).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_stream.py`:
 
@@ -1014,12 +1014,12 @@ def test_stream_gives_up_after_max_reconnects(monkeypatch):
     assert calls["n"] == 3  # initial open + 2 reconnects
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_stream.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.stream'`.
 
-- [ ] **Step 3: Implement the minimal module**
+- [x] **Step 3: Implement the minimal module**
 
 Create `flowsense/stream.py`:
 
@@ -1068,12 +1068,12 @@ class ReconnectingStream:
             self._cap = None
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_stream.py -v`
 Expected: 3 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add flowsense/stream.py tests/test_stream.py
@@ -1098,7 +1098,7 @@ git commit -m "feat: add ReconnectingStream with backoff and bounded reconnect a
   - `per_lane_present(dets: list[dict]) -> dict[str, int]` — present-count per lane for tracked mode.
   - `main(argv=None) -> int` — wires everything: config, logging, camera resolution, ROI load, model load, stream, emit loop with graceful `KeyboardInterrupt`, snapshot/`--show` support.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_runner.py`:
 
@@ -1150,12 +1150,12 @@ def test_parse_args_keeps_legacy_flags():
     assert args.log_json is True
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `python -m pytest tests/test_runner.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.runner'`.
 
-- [ ] **Step 3: Implement `flowsense/runner.py`**
+- [x] **Step 3: Implement `flowsense/runner.py`**
 
 ```python
 """FlowSense runner: main loop, CLI, graceful shutdown."""
@@ -1324,7 +1324,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 4: Create `flowsense/__main__.py`**
+- [x] **Step 4: Create `flowsense/__main__.py`**
 
 ```python
 """Entry point for `python -m flowsense`."""
@@ -1336,7 +1336,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 5: Rewrite `connector.py` as a thin wrapper**
+- [x] **Step 5: Rewrite `connector.py` as a thin wrapper**
 
 Replace the entire contents of `connector.py`:
 
@@ -1354,27 +1354,27 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `python -m pytest tests/test_runner.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 7: Verify the full suite still passes**
+- [x] **Step 7: Verify the full suite still passes**
 
 Run: `python -m pytest -q`
 Expected: all tests pass (smoke, config, lanes, api, telemetry, detector, counter, stream, runner).
 
-- [ ] **Step 8: Verify CLI wiring offline**
+- [x] **Step 8: Verify CLI wiring offline**
 
 Run: `python connector.py --help`
 Expected: usage text listing `--camera`, `--camera-id`, `--url`, `--out`, `--model`, `--interval`, `--track`, `--snapshot-only`, `--show`, `--skip-detect`, `--log-json`, `--log-level`.
 
-- [ ] **Step 9: Optional live sanity check (needs API key + model installed)**
+- [x] **Step 9: Optional live sanity check (needs API key + model installed)**
 
 Run: `python connector.py --camera-id 30 --snapshot-only`
 Expected: logs `camera`, `model loaded`, one `record`, then `done`. Requires `pip install -r requirements.txt` and a valid `FLOWSENSE_API_KEY`. If the environment lacks either, skip this step.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add flowsense/runner.py flowsense/__main__.py connector.py tests/test_runner.py
@@ -1392,7 +1392,7 @@ git commit -m "refactor: wire all modules into runner; connector.py becomes a th
 - Consumes: `load_config` from `flowsense.config`.
 - Produces: none (no code depends on this change).
 
-- [ ] **Step 1: Replace the hardcoded API key**
+- [x] **Step 1: Replace the hardcoded API key**
 
 In `calibrate.py`, replace lines 24-25:
 
@@ -1411,7 +1411,7 @@ API_URL = _CONFIG.api_url
 API_KEY = _CONFIG.api_key
 ```
 
-- [ ] **Step 2: Fail fast when the key is missing**
+- [x] **Step 2: Fail fast when the key is missing**
 
 In `calibrate.py`, at the top of `main()`, after `args = ap.parse_args()`, insert:
 
@@ -1422,7 +1422,7 @@ In `calibrate.py`, at the top of `main()`, after `args = ap.parse_args()`, inser
         )
 ```
 
-- [ ] **Step 3: Verify it imports and validates**
+- [x] **Step 3: Verify it imports and validates**
 
 Run: `python calibrate.py --help`
 Expected: usage text prints (imports fine). Also confirm no API key string remains in source:
@@ -1430,12 +1430,12 @@ Expected: usage text prints (imports fine). Also confirm no API key string remai
 Run: `python -c "import calibrate; print('ok')"`
 Expected: `ok` if `.env` exists with a key, or a `SystemExit` message about the missing key if it doesn't — either proves the old hardcoded key is gone.
 
-- [ ] **Step 4: Grep to confirm the secret is removed**
+- [x] **Step 4: Grep to confirm the secret is removed**
 
 Run: `rg -n "sdsi7239[0-9]" C:\Users\legion\flowsense`
 Expected: no matches (secret no longer in any file).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add calibrate.py
@@ -1452,7 +1452,7 @@ git commit -m "fix: read Kudus API key from env/.env in calibrate.py"
 **Interfaces:**
 - Consumes: all modules; documents the final CLI, env vars, schema, and test commands.
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`**
 
 ```markdown
 # FlowSense
@@ -1525,22 +1525,22 @@ python -m pytest -q
 No network or camera access is needed; stream and API code are tested with fakes.
 ```
 
-- [ ] **Step 2: Run the full test suite**
+- [x] **Step 2: Run the full test suite**
 
 Run: `python -m pytest -q`
-Expected: all tests pass. Final expected count: 4 (smoke) + 4 (config) + 6 (lanes) + 7 (api) + 3 (telemetry) + 5 (detector) + 4 (counter) + 3 (stream) + 4 (runner) = **40 passed**.
+Expected: all tests pass. Final count: 1 (smoke) + 4 (config) + 6 (lanes) + 6 (api) + 3 (telemetry) + 4 (detector) + 4 (counter) + 3 (stream) + 4 (runner) = **35 passed**.
 
-- [ ] **Step 3: Verify both entry points work offline**
+- [x] **Step 3: Verify both entry points work offline**
 
 Run: `python connector.py --help` and `python -m flowsense --help`
 Expected: both print usage.
 
-- [ ] **Step 4: Verify no secret remains in tracked files**
+- [x] **Step 4: Verify no secret remains in tracked files**
 
 Run: `rg -n "sdsi7239[0-9]" . --hidden -g "!.git"`
 Expected: no matches.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add README.md
