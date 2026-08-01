@@ -1398,7 +1398,7 @@ In `calibrate.py`, replace lines 24-25:
 
 ```python
 API_URL = "https://kudussehat.kuduskab.go.id/api/get-cctv"
-API_KEY = "sdsi72392knqw2hhuhsi21380sdisidSHSIAbA12bhsjk23Sndj"
+API_KEY = "&lt;REDACTED&gt;"
 ```
 
 with:
@@ -1432,7 +1432,7 @@ Expected: `ok` if `.env` exists with a key, or a `SystemExit` message about the 
 
 - [ ] **Step 4: Grep to confirm the secret is removed**
 
-Run: `rg -n "sdsi72392" C:\Users\legion\flowsense`
+Run: `rg -n "sdsi7239[0-9]" C:\Users\legion\flowsense`
 Expected: no matches (secret no longer in any file).
 
 - [ ] **Step 5: Commit**
@@ -1537,7 +1537,7 @@ Expected: both print usage.
 
 - [ ] **Step 4: Verify no secret remains in tracked files**
 
-Run: `rg -n "sdsi72392" . --hidden -g "!.git"`
+Run: `rg -n "sdsi7239[0-9]" . --hidden -g "!.git"`
 Expected: no matches.
 
 - [ ] **Step 5: Commit**
