@@ -16,6 +16,8 @@ def load_rois(rois_path, camera_key: str) -> dict:
 
 
 def point_in_poly(pt, poly) -> bool:
+    if not poly or len(poly) < 3:
+        return False
     return cv2.pointPolygonTest(np.array(poly, np.int32), pt, False) >= 0
 
 
