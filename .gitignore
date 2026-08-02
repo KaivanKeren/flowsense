@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
-.env
+*.env
 data/*.jsonl
 data/frame_test.jpg
