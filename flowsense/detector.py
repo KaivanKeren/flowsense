@@ -8,9 +8,18 @@ VEHICLE_CLASSES = {1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"
 
 def load_model(model_path: str):
     """Lazy ultralytics import so unit tests run without it installed."""
+    import os
+    import torch
     from ultralytics import YOLO
 
-    return YOLO(model_path)
+    # Allow duplicate OpenMP libraries (conda + pytorch)
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+    
+    model = YOLO(model_path)
+    # Move model to GPU if available
+    if torch.cuda.is_available():
+        model.to('cuda')
+    return model
 
 
 def _detections(results, min_conf):

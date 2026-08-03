@@ -1,0 +1,39 @@
+# =========================================================================
+#  FlowSense SUMO Adaptive Traffic Light Simulator — Configuration File
+#  All simulation parameters can be tuned here without modifying source code.
+# =========================================================================
+
+[algorithm]
+min_green = 10.0            # Minimum guaranteed green duration (seconds)
+max_green = 50.0            # Maximum allowed green duration (seconds)
+yellow_duration = 4.0       # Fixed yellow phase duration (seconds)
+starvation_threshold = 120.0  # Red time threshold (seconds) before priority boost kicks in
+max_queue_capacity = 30     # Queue size used to normalize proportional green scaling
+
+[evp]
+enabled = true              # Enable Emergency Vehicle Preemption
+detection_radius = 200.0    # Distance (meters) within which EVP triggers
+cooldown_seconds = 10.0     # Cooldown after preemption to prevent oscillation
+spawn_probability = 0.01    # Probability (0-1) of an emergency vehicle in the traffic mix
+
+[simulation]
+duration = 3600             # Total simulation time (seconds)
+random_seed = 42            # Deterministic seed for reproducibility
+step_length = 0.1           # SUMO simulation step length (seconds)
+
+[traffic]
+normal_volumes = [[0, 900, 180], [900, 1800, 350], [1800, 2700, 220], [2700, 3600, 320]]
+congested_volumes = [[0, 900, 800], [900, 1800, 1500], [1800, 2700, 900], [2700, 3600, 1400]]
+
+[logging]
+enabled = true              # Enable per-step CSV data logging
+interval_steps = 100        # Log every N simulation steps (100 steps = 10 seconds at 0.1s step)
+output_file = "output/simulation_log.csv"
+
+[flowsense]
+# Mapping from FlowSense lane names to SUMO compass directions
+lane_mapping_kota = "S"
+lane_mapping_ploso = "N"
+lane_mapping_demak = "W"
+lane_mapping_sekoe = "E"
+default_data_source = "data/connector_30.jsonl"
