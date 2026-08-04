@@ -21,8 +21,11 @@ import requests
 BASE_DIR = Path(__file__).resolve().parent
 ROIS_PATH = BASE_DIR / "config" / "rois.json"
 
-API_URL = "https://kudussehat.kuduskab.go.id/api/get-cctv"
-API_KEY = "sdsi72392knqw2hhuhsi21380sdisidSHSIAbA12bhsjk23Sndj"
+from flowsense.config import load_config
+
+_CONFIG = load_config()
+API_URL = _CONFIG.api_url
+API_KEY = _CONFIG.api_key
 
 
 def fetch_cameras():
@@ -65,6 +68,11 @@ def main():
                     help="comma-separated lane names in draw order")
     ap.add_argument("--out", help="output json file (default: config/rois.json)")
     args = ap.parse_args()
+
+    if not API_KEY:
+        raise SystemExit(
+            "FLOWSENSE_API_KEY is not set; copy .env.example to .env and fill it in"
+        )
 
     cam = load_camera(cam_id=args.camera_id, url=args.url)
     camera_key = str(cam["id"])
