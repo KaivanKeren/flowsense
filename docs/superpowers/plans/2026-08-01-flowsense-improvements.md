@@ -2,11 +2,27 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Harden FlowSense into a testable, maintainable, reliable connector: secrets moved to env, resilient stream/API handling, per-vehicle lane-crossing counting via YOLO tracking, structured logging, and full unit test coverage — without breaking the existing `connector.py` CLI or the `.jsonl` record schema.
+**Goal:** Harden FlowSense into a testable, maintainable, reliable connector: secrets moved to env, resilient stream/API handling, per-vehicle lane-crossing counting via YOLO tracking, **per-lane density classification (klasifikasi kepadatan)**, structured logging, and full unit test coverage — without breaking the existing `connector.py` CLI or the `.jsonl` record schema. This plan implements the edge side of the system shown in `Reference/FlowSense_Diagram.drawio` (layers 1–3: SOURCE, PROCESSING, and the connector's record/snapshot outputs); downstream layers 3→6 are scoped as a roadmap (see end).
 
-**Architecture:** Extract the monolithic `connector.py` into a `flowsense/` package with focused modules (`config`, `api`, `lanes`, `detector`, `stream`, `telemetry`, `runner`). `connector.py` stays as a thin entry point so existing usage (`python connector.py --camera ...`) keeps working. All pure logic (lane mapping, summarization, tracking, config parsing) is unit-tested offline; streaming/API code is tested with injected fakes. No real network or camera streams are touched by tests.
+**Architecture:** Extract the monolithic `connector.py` into a `flowsense/` package with focused modules (`config`, `api`, `lanes`, `detector`, `density`, `stream`, `telemetry`, `runner`). `connector.py` stays as a thin entry point so existing usage (`python connector.py --camera ...`) keeps working. All pure logic (lane mapping, summarization, tracking, density classification, config parsing) is unit-tested offline; streaming/API code is tested with injected fakes. No real network or camera streams are touched by tests.
 
 **Tech Stack:** Python 3.13, OpenCV (cv2), numpy, requests, ultralytics (YOLOv11), pytest.
+
+## System Context (from `Reference/FlowSense_Diagram.drawio`)
+
+The reference diagram is the canonical system architecture. This plan implements the **edge connector** (diagram layers 1–3, left half). Each layer maps to plan tasks as follows:
+
+| Diagram layer | Meaning | Covered by plan tasks |
+|---|---|---|
+| 1. SOURCE | Portal CCTV Pemkab Kudus (HLS) — "Tarik frame" | `connector.py` / `runner.main` (Task 9) opens the HLS stream via `ReconnectingStream` (Task 8) |
+| 2. PROCESSING | Python + OpenCV + YOLOv11 — "hitung per ROI → klasifikasi kepadatan" | ROI count + lane mapping (Task 3), YOLO wrapper + summarization (Task 6), lane-crossing tracking (Task 7), **density classification (Task 12)** |
+| 3. DATABASE | PostgreSQL + TimescaleDB (Record JSON) | Connector emits the `.jsonl` record (schema in Task 9/11); DB ingestion is downstream (roadmap) |
+| 3b. STORAGE | Garage/disk (Snapshot JPEG) | Snapshot produced in `--snapshot-only` calibration (Task 9); persistent snapshot sink is downstream (roadmap) |
+| 4. API/BACKEND | FastAPI + JWT (operator) | Not in this plan — roadmap |
+| 5. CLIENT | Flutter / Riverpod / flutter_map (warga + operator flavors) | Not in this plan — roadmap |
+| 5/6. SIMULATION | SUMO + TraCI (input: lane counts from layer 3; output: wait-time delta) | Consumes connector's per-lane counts — roadmap; reference at `Reference/sumo-adaptive-traffic-signal-control-main` |
+
+**Constraints preserved from the diagram:** the connector outputs *two* artifacts — a **Record JSON** (to layer 3 DATABASE) and a **Snapshot JPEG** (to layer 3b STORAGE). The plan's record schema is the contract those downstream layers consume.
 
 ## Global Constraints
 
@@ -1549,6 +1565,111 @@ git commit -m "docs: add README with setup, usage, schema, config, and tests"
 
 ---
 
+### Task 12: Density classification (klasifikasi kepadatan)
+
+**Files:**
+- Create: `flowsense/density.py`
+- Create: `tests/test_density.py`
+
+**Interfaces:**
+- Consumes: nothing (pure logic, stdlib only).
+- Produces:
+  - `DENSITY_LEVELS: tuple[str, ...]` — `("lancar", "sedang", "padat")` (smooth / moderate / heavy), matching the Indonesian traffic domain in the diagram.
+  - `density_from_count(count: int, thresholds: tuple[int, int] = (3, 8)) -> str` — `count <= thresholds[0]` → `"lancar"`, `<= thresholds[1]` → `"sedang"`, else `"padat"`.
+  - `classify_density(per_lane: dict[str, int], thresholds: tuple[int, int] = (3, 8)) -> dict[str, str]` — returns `{lane: label}` for every lane present in `per_lane` (lanes with 0 vehicles → `"lancar"`). Pure and offline-testable.
+
+- [ ] **Step 1: Write the failing tests**
+
+Create `tests/test_density.py`:
+
+```python
+from flowsense.density import classify_density, density_from_count
+
+def test_density_from_count_thresholds():
+    assert density_from_count(0) == "lancar"
+    assert density_from_count(3) == "lancar"
+    assert density_from_count(4) == "sedang"
+    assert density_from_count(8) == "sedang"
+    assert density_from_count(9) == "padat"
+
+def test_classify_density_per_lane():
+    per_lane = {"kota": 2, "ploso": 5, "demak": 12}
+    assert classify_density(per_lane) == {
+        "kota": "lancar",
+        "ploso": "sedang",
+        "demak": "padat",
+    }
+
+def test_classify_density_zero_is_lancar():
+    assert classify_density({"kota": 0, "ploso": 0}) == {"kota": "lancar", "ploso": "lancar"}
+
+def test_classify_density_custom_thresholds():
+    assert classify_density({"kota": 10}, thresholds=(5, 15)) == {"kota": "sedang"}
+```
+
+- [ ] **Step 2: Run the tests to verify they fail**
+
+Run: `python -m pytest tests/test_density.py -v`
+Expected: FAIL with `ModuleNotFoundError: No module named 'flowsense.density'`.
+
+- [ ] **Step 3: Implement the minimal module**
+
+Create `flowsense/density.py`:
+
+```python
+"""Per-lane traffic density classification (klasifikasi kepadatan)."""
+
+DENSITY_LEVELS = ("lancar", "sedang", "padat")
+
+
+def density_from_count(count: int, thresholds: tuple[int, int] = (3, 8)) -> str:
+    """Map a vehicle count to a density label."""
+    low, high = thresholds
+    if count <= low:
+        return "lancar"
+    if count <= high:
+        return "sedang"
+    return "padat"
+
+
+def classify_density(per_lane: dict, thresholds: tuple[int, int] = (3, 8)) -> dict:
+    """Classify every lane's vehicle count into a density label."""
+    return {lane: density_from_count(count, thresholds) for lane, count in per_lane.items()}
+```
+
+- [ ] **Step 4: Run the tests to verify they pass**
+
+Run: `python -m pytest tests/test_density.py -v`
+Expected: 4 passed.
+
+- [ ] **Step 5: Wire density into the runner record (additive schema field)**
+
+In `flowsense/runner.py`:
+  - import `classify_density` from `.density`;
+  - after building `summary`, compute `density = classify_density(summary.get("per_lane", {}))`;
+  - extend `build_record(ts, camera, summary, crossings=None, density=None)` to include `"density": density` only when `density is not None`;
+  - emit it in the main loop alongside `crossings`.
+
+This is **additive** — existing record keys (`ts`, `camera_id`, `camera`, `total_vehicles`, `per_lane`) are unchanged, and `density` is omitted unless classification runs, satisfying the schema constraint in Global Constraints.
+
+- [ ] **Step 6: Extend `tests/test_runner.py`**
+
+Add a `test_build_record_with_density` asserting `r["density"] == {"kota": "sedang"}` when `density={"kota": "sedang"}` is passed.
+
+- [ ] **Step 7: Run the full suite**
+
+Run: `python -m pytest -q`
+Expected: all tests pass (smoke, config, lanes, api, telemetry, detector, counter, stream, runner, density).
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add flowsense/density.py flowsense/runner.py tests/test_density.py tests/test_runner.py
+git commit -m "feat: add per-lane density classification (klasifikasi kepadatan)"
+```
+
+---
+
 ## Self-Review
 
 - **Spec coverage (all six requested areas):**
@@ -1557,6 +1678,18 @@ git commit -m "docs: add README with setup, usage, schema, config, and tests"
   - Test coverage → Tasks 1-9 each ship offline unit tests; Task 11 runs the full suite.
   - Structure & maintainability → Tasks 1, 3, 6, 9 (package split, thin `connector.py`), Task 11 (README).
   - Observability → Task 5 (JSON logging), Task 9 (startup/reconnect/record/done logs).
-  - Core quality (tracking + counting) → Tasks 6, 7 (`track_summary` + `TrackingCounter`), wired in Task 9 via `--track`.
+  - Core quality (tracking + counting + density) → Tasks 6, 7 (`track_summary` + `TrackingCounter`), density classification Task 12 (`classify_density`), wired in Task 9/12 via the additive `density` record field.
 - **Placeholder scan:** every task contains concrete code, exact test commands, and expected results. No "TBD"/"add handling" placeholders.
-- **Type consistency:** `lane_from_detection(bbox, lanes)` (Task 3) is called by `summarize_frame`/`track_summary` (Task 6) with `bbox`; `track_summary` returns `(dets, [(track_id, lane)])` consumed by `TrackingCounter.update` (Task 7) in Task 9; `build_record(ts, camera, summary, crossings)` is defined and used in Task 9; `Config` field names match `load_config`/`.env.example` throughout. `per_lane` key and `vehicles` list remain in `summary` across both detection modes so `annotate` keeps working.
+- **Type consistency:** `lane_from_detection(bbox, lanes)` (Task 3) is called by `summarize_frame`/`track_summary` (Task 6) with `bbox`; `track_summary` returns `(dets, [(track_id, lane)])` consumed by `TrackingCounter.update` (Task 7) in Task 9; `build_record(ts, camera, summary, crossings=None, density=None)` is defined in Task 9 and extended in Task 12; `Config` field names match `load_config`/`.env.example` throughout. `per_lane` key and `vehicles` list remain in `summary` across both detection modes so `annotate` keeps working; `density` (Task 12) is an additive optional record field keyed off `per_lane`.
+
+## Roadmap — downstream components (diagram layers 3 → 6)
+
+The reference diagram extends well beyond the edge connector this plan covers. These are **out of scope for the connector refactor** but are the connector's consumers; the record schema and snapshot output are the contracts they build on.
+
+- **Layer 3 — DATABASE (PostgreSQL + TimescaleDB):** ingest the `.jsonl` records (or stream them directly). Add a `flowsense/sink.py` `RecordSink` interface with a local `.jsonl` implementation (already effectively done by the runner) and a `PostgresSink` using `psycopg`/TimescaleDB. Hypertable on `ts` for the per-minute aggregation ("Agregasi 1 menit") the diagram shows feeding layer 4.
+- **Layer 3b — STORAGE SERVICE (Garage/disk):** persist Snapshot JPEGs (currently only produced in `--snapshot-only` calibration) on a regular cadence to object storage; add a `SnapshotSink` alongside `RecordSink`.
+- **Layer 4 — API/BACKEND (FastAPI + JWT):** serve records/snapshots to operators; JWT auth for the operator flavor. Exposes the per-lane counts that layer 5/6 consume.
+- **Layer 5 — CLIENT (Flutter / Riverpod / flutter_map):** two flavors — `warga` (public) and `operator` (authenticated). Reads from layer 4.
+- **Layer 5/6 — SIMULATION (SUMO + TraCI):** inputs the lane counts from layer 3, outputs wait-time delta ("selisih waktu tunggu"). Reference implementation already in `Reference/sumo-adaptive-traffic-signal-control-main`; wire its input to the connector's per-lane counts.
+
+> NOTE: adding PostgreSQL / object-storage / FastAPI / SUMO dependencies would relax the "no new dependencies" constraint in Global Constraints and is therefore tracked here as future work, not part of the connector plan.
