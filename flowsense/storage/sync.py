@@ -57,7 +57,7 @@ class FlowSenseSyncManager:
             try:
                 self.sync_now()
             except Exception as e:
-                logger.error(f"Sync loop error: {e}")
+                logger.exception("Sync loop error")
             time.sleep(interval_seconds)
 
     def start_sync(self, interval_seconds: int = 300):

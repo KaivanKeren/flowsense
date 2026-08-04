@@ -37,10 +37,10 @@ class GarageStorageClient:
                     logger.info(f"Created bucket {self.bucket_name}")
                     return True
                 except ClientError as create_err:
-                    logger.error(f"Failed to create bucket: {create_err}")
+                    logger.exception(f"Failed to create bucket: {create_err}")
                     return False
             else:
-                logger.error(f"Error checking bucket: {e}")
+                logger.exception(f"Error checking bucket: {e}")
                 return False
 
     def upload_file(self, local_path: str, remote_key: str) -> bool:
@@ -49,7 +49,7 @@ class GarageStorageClient:
             self.s3_client.upload_file(local_path, self.bucket_name, remote_key)
             return True
         except ClientError as e:
-            logger.error(f"Failed to upload file {local_path} to {remote_key}: {e}")
+            logger.exception(f"Failed to upload file {local_path} to {remote_key}: {e}")
             return False
 
     def download_file(self, remote_key: str, local_path: str) -> bool:
@@ -58,7 +58,7 @@ class GarageStorageClient:
             self.s3_client.download_file(self.bucket_name, remote_key, local_path)
             return True
         except ClientError as e:
-            logger.error(f"Failed to download {remote_key} to {local_path}: {e}")
+            logger.exception(f"Failed to download {remote_key} to {local_path}: {e}")
             return False
 
     def upload_bytes(self, data: bytes, remote_key: str, content_type: str = "application/octet-stream") -> bool:
@@ -72,7 +72,7 @@ class GarageStorageClient:
             )
             return True
         except ClientError as e:
-            logger.error(f"Failed to upload bytes to {remote_key}: {e}")
+            logger.exception(f"Failed to upload bytes to {remote_key}: {e}")
             return False
 
     def list_objects(self, prefix: str = "") -> List[str]:
@@ -83,7 +83,7 @@ class GarageStorageClient:
                 return [obj["Key"] for obj in response["Contents"]]
             return []
         except ClientError as e:
-            logger.error(f"Failed to list objects with prefix {prefix}: {e}")
+            logger.exception(f"Failed to list objects with prefix {prefix}: {e}")
             return []
 
     def delete_object(self, remote_key: str) -> bool:
@@ -92,7 +92,7 @@ class GarageStorageClient:
             self.s3_client.delete_object(Bucket=self.bucket_name, Key=remote_key)
             return True
         except ClientError as e:
-            logger.error(f"Failed to delete {remote_key}: {e}")
+            logger.exception(f"Failed to delete {remote_key}: {e}")
             return False
 
     def get_presigned_url(self, remote_key: str, expires_in: int = 3600) -> Optional[str]:
@@ -105,7 +105,7 @@ class GarageStorageClient:
             )
             return url
         except ClientError as e:
-            logger.error(f"Failed to generate presigned URL for {remote_key}: {e}")
+            logger.exception(f"Failed to generate presigned URL for {remote_key}: {e}")
             return None
 
     def sync_directory(self, local_dir: str, remote_prefix: str) -> bool:
@@ -113,7 +113,7 @@ class GarageStorageClient:
         success = True
         local_path = Path(local_dir)
         if not local_path.exists() or not local_path.is_dir():
-            logger.error(f"Directory {local_dir} does not exist.")
+            logger.exception(f"Directory {local_dir} does not exist.")
             return False
             
         for filepath in local_path.rglob("*"):

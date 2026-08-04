@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from typing import List, Optional
+from typing import Annotated, List, Optional
 from datetime import datetime
 from ..schemas import DetectionCreate, DetectionResponse
 from ...database.database import get_db
@@ -10,7 +10,7 @@ from ...database.models import Detection
 router = APIRouter()
 
 @router.post("/", response_model=DetectionResponse)
-async def create_detection(detection: DetectionCreate, db: AsyncSession = Depends(get_db)):
+async def create_detection(detection: DetectionCreate, db: Annotated[AsyncSession, Depends(get_db)]):
     db_det = Detection(**detection.model_dump())
     db.add(db_det)
     await db.commit()
@@ -21,7 +21,7 @@ async def create_detection(detection: DetectionCreate, db: AsyncSession = Depend
 async def get_detections(
     start_time: Optional[datetime] = None,
     end_time: Optional[datetime] = None,
-    db: AsyncSession = Depends(get_db)
+    db: Annotated[AsyncSession, Depends(get_db)]
 ):
     query = select(Detection)
     if start_time:

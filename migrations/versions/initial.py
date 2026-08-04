@@ -21,4 +21,7 @@ def upgrade() -> None:
     pass
 
 def downgrade() -> None:
+    # Intentional no-op: this is the initial (base) migration, so there is no
+    # prior schema to revert to. Dropping the initial tables is destructive
+    # and is intentionally not supported.
     pass

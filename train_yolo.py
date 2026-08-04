@@ -24,7 +24,7 @@ def main():
     print("="*50 + "\n")
 
     print(f"Starting training on {args.data} for {args.epochs} epochs...")
-    results = model.train(
+    model.train(
         data=args.data,
         epochs=args.epochs,
         batch=args.batch,

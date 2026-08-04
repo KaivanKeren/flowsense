@@ -62,6 +62,7 @@ def main():
 
     frames = sorted(FRAMES.glob("*.jpg"))
     random.seed(SEED)
+    # Deterministic, reproducible dataset split (not security-sensitive).
     random.shuffle(frames)
     split = int(SPLIT * len(frames))
     splits = {"train": frames[:split], "val": frames[split:]}
