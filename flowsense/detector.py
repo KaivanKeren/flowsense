@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 
 from .lanes import lane_from_detection
 
-VEHICLE_CLASSES = {0: "person", 1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
+VEHICLE_CLASSES = {1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
 
 
 def load_model(model_path: str):
