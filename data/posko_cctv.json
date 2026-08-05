@@ -1,0 +1,58 @@
+{
+  "Direct streams": [
+    {"location": "Dieng", "link": "https://cctv.perhubunganjateng.online/Dieng/index.m3u8"},
+    {"location": "Bayeman", "link": "https://cctv.perhubunganjateng.online/Bayeman/index.m3u8"},
+    {"location": "Gombong", "link": "https://cctv.perhubunganjateng.online/Gombong/index.m3u8"},
+    {"location": "Buntu", "link": "https://cctv.perhubunganjateng.online/Buntu/index.m3u8"},
+    {"location": "Wangon", "link": "https://cctv.perhubunganjateng.online/Wangon/index.m3u8"},
+    {"location": "Bumiayu", "link": "https://cctv.perhubunganjateng.online/Bumiayu/index.m3u8"},
+    {"location": "Ketanggungan", "link": "https://cctv.perhubunganjateng.online/Brebes/index.m3u8"},
+    {"location": "Exit Tol Prambanan", "link": "https://cctv.perhubunganjateng.online/Klaten/index.m3u8"},
+    {"location": "Bandungan", "link": "https://cctv.perhubunganjateng.online/Bandungan/index.m3u8"},
+    {"location": "Bawen", "link": "https://cctv.perhubunganjateng.online/Bawen/index.m3u8"},
+    {"location": "Sayung - 1", "link": "https://www.youtube.com/watch?v=juwNAQvciCY"},
+    {"location": "Sayung - 2", "link": "https://www.youtube.com/watch?v=TeIF-19D2fc"},
+    {"location": "Terminal Tawangmangu", "link": "https://scctv.karanganyarkab.go.id/zm/cgi-bin/nph-zms?scale=100&monitor=48&auth=578288c2894c0cff73a97ee5fb0f3cb3&rand=1678761874"}
+  ],
+  "Wilayah I": [
+    {"location": "Kota Semarang", "link": "https://pantausemar.semarangkota.go.id/"},
+    {"location": "Kota Salatiga", "link": "https://cctv.salatiga.go.id/"},
+    {"location": "Kab. Semarang", "link": "https://s.id/CCTV_SMG_KAB"},
+    {"location": "Kab. Demak", "link": "https://s.id/CCTV_DMK_KAB"},
+    {"location": "Kab. Kendal", "link": "https://s.id/CCTV_KNDL_KAB"},
+    {"location": "Kab. Grobogan", "link": "https://s.id/CCTV_GRBG_KAB"}
+  ],
+  "Wilayah II": [
+    {"location": "Kab. Pati", "link": "https://cctv.patikab.go.id/"},
+    {"location": "Kab. Rembang", "link": "https://cctv.rembangkab.go.id/"},
+    {"location": "Kab. Jepara", "link": "https://samudra.jepara.go.id/cctv"},
+    {"location": "Kab. Kudus", "link": "https://stream.kuduskab.go.id"},
+    {"location": "Kab. Blora", "link": "https://cctv.blorakab.go.id/"}
+  ],
+  "Wilayah III": [
+    {"location": "Kota Surakarta", "link": "https://ccroom-dishub.surakarta.go.id/"},
+    {"location": "Kab. Sukoharjo", "link": "https://cctv-dishub.sukoharjokab.go.id/"},
+    {"location": "Kab. Klaten", "link": "https://cctv.klaten.go.id/"},
+    {"location": "Kab. Karanganyar", "link": "https://gishub.karanganyarkab.go.id/cctv/datav"},
+    {"location": "Kab. Boyolali", "link": "https://pantau.boyolali.go.id/page"},
+    {"location": "Kab. Wonogiri", "link": "https://smartcity.wonogirikab.go.id/smart-governance/cctv/22"}
+  ],
+  "Wilayah IV": [
+    {"location": "Kota Magelang", "link": "https://cctv.magelangkota.go.id/"},
+    {"location": "Kab. Magelang", "link": "https://www.cctv.dishub.magelangkab.go.id/"},
+    {"location": "Kab. Purworejo", "link": "https://lekjo.purworejokab.go.id"},
+    {"location": "Kab. Temanggung", "link": "https://www.youtube.com/@dinkominfotemanggung"},
+    {"location": "Kab. Kebumen", "link": "https://cctv.kebumenkab.go.id/"}
+  ],
+  "Wilayah V": [
+    {"location": "Kab. Banyumas", "link": "https://banyumaskab.go.id/cctv"},
+    {"location": "Kab. Wonosobo", "link": "https://cctv.wonosobokab.go.id"},
+    {"location": "Kab. Cilacap", "link": "https://cctv.cilacapkab.go.id/Jalungmas/cctvcilacap"}
+  ],
+  "Wilayah VI": [
+    {"location": "Kota Pekalongan", "link": "https://cctv.pekalongankota.go.id/"},
+    {"location": "Kota Tegal", "link": "https://103.12.164.49"},
+    {"location": "Kab. Pemalang", "link": "https://cctv.pemalangkab.go.id/"},
+    {"location": "Kab. Pekalongan", "link": "https://cctv.pekalongankab.go.id"}
+  ]
+}

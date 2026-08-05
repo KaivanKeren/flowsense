@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="zgEudHD-fTmIHnSA29UV">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-2" edge="1" parent="1" source="RsN-fBrmCJt8ZRIeU6SG-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="ZbJyATE67Baf4z0MbcqB-1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-7" connectable="0" parent="ZbJyATE67Baf4z0MbcqB-2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Tarik frame&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.1333" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RsN-fBrmCJt8ZRIeU6SG-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;1. SOURCE&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Portal CCTV Pemkab Kudus - HLS&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="90" width="340" x="290" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-4" edge="1" parent="1" source="ZbJyATE67Baf4z0MbcqB-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" target="ZbJyATE67Baf4z0MbcqB-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-8" connectable="0" parent="ZbJyATE67Baf4z0MbcqB-4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Record JSON&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0839" y="2" as="geometry">
+            <mxPoint x="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-6" edge="1" parent="1" source="ZbJyATE67Baf4z0MbcqB-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ZbJyATE67Baf4z0MbcqB-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-9" connectable="0" parent="ZbJyATE67Baf4z0MbcqB-6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Snapshot JPEG&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.1017" as="geometry">
+            <mxPoint x="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;2. PROCESSING&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Python - OpenCV - YOLOv11&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;hitung per ROI --&amp;gt; klasifikasi kepadatan&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="340" x="290" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-11" edge="1" parent="1" source="ZbJyATE67Baf4z0MbcqB-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ZbJyATE67Baf4z0MbcqB-10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="620" />
+              <mxPoint x="460" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-18" connectable="0" parent="ZbJyATE67Baf4z0MbcqB-11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Agregasi 1 menit&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.2386" y="-2" as="geometry">
+            <mxPoint x="48" y="-22" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;3. DATABASE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;PostgreSQL + TimescaleDB&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="270" x="115" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-12" edge="1" parent="1" source="ZbJyATE67Baf4z0MbcqB-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="ZbJyATE67Baf4z0MbcqB-10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="665" y="620" />
+              <mxPoint x="460" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;3b. STORAGE SERVICE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Garage / disk&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="270" x="530" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-14" edge="1" parent="1" source="ZbJyATE67Baf4z0MbcqB-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="ZbJyATE67Baf4z0MbcqB-13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-15" connectable="0" parent="ZbJyATE67Baf4z0MbcqB-14" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;HTTP JSON&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0624" y="-1" as="geometry">
+            <mxPoint y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;4. API/BACKEND&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;FastAPI - JWT untuk operator&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="340" x="290" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;5. CLIENT&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Flutter - Riverpod - flutter_map&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;flavor warga - flavor operator&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="340" x="290" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="ZbJyATE67Baf4z0MbcqB-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;5. SIMULATION&lt;/font&gt;&lt;/div&gt;&lt;blockquote&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;SUMO - TraCI - Python&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;input : hitungan lajur dari lapis 3&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;output : selisih waktu tunggu&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;" vertex="1">
+          <mxGeometry height="100" width="340" x="290" y="1030" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: flowsense
+      POSTGRES_PASSWORD: flowsense
+      POSTGRES_DB: flowsense
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - flowsense-network
+
+  garage:
+    image: dxflrs/garage:v1.1.0
+    ports:
+      - "3900:3900"
+      - "3902:3902"
+    volumes:
+      - garage-data:/var/lib/garage
+      - ./config/garage.toml:/etc/garage.toml
+    networks:
+      - flowsense-network
+    command: garage server
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - flowsense-network
+
+volumes:
+  postgres-data:
+  garage-data:
+
+networks:
+  flowsense-network:
+    driver: bridge

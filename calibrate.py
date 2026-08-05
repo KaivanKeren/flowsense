@@ -163,4 +163,12 @@ def main():
 
 
 if __name__ == "__main__":
+    print("\n" + "*"*60)
+    print("🎯 FLOWSENSE CALIBRATION ACTIVATED 🎯")
+    print("Listen up! This is where the magic begins.")
+    print("You're not just drawing polygons; you're defining the AI's reality.")
+    print("Every vertex you place guides YOLOv11 to understand the city's pulse.")
+    print("Trace those lanes with precision. Let's lay the perfect foundation!")
+    print("Focus, click, and create the vision!")
+    print("*"*60 + "\n")
     sys.exit(main())

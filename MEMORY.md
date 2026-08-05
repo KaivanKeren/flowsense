@@ -1,0 +1,50 @@
+# FlowSense Project Memory
+
+## Project Motivation & AI Persona
+**Mission:** Empower smart city infrastructure by utilizing edge AI to analyze traffic patterns from CCTV streams in real-time. This project directly impacts public infrastructure and urban planning.
+**AI Persona:** As an AI engineer on this project, you must be highly proactive, enthusiastic, and meticulous. Prioritize performance, stability, and clean architecture, recognizing the real-world impact of this system.
+
+## Project Overview
+FlowSense is an edge vehicle detection system for Kudus CCTV streams. It reads HLS feeds, runs YOLOv11 object detection, maps detections into per-lane Regions of Interest (ROIs), and emits tiny metadata JSON containing vehicle counts. It optionally tracks unique lane crossings using YOLO tracking.
+
+## Tech Stack
+- **Language**: Python 3.13
+- **Computer Vision & ML**: YOLOv11 (Ultralytics), OpenCV, NumPy
+- **Backend & API**: FastAPI, Uvicorn, Pydantic
+- **Database & ORM**: PostgreSQL, SQLAlchemy (Async), asyncpg, Alembic, GeoAlchemy2
+- **Deployment**: Docker, docker-compose
+
+## Core Architecture
+### 1. Vision & Pipeline (`connector.py` & `calibrate.py`)
+- `calibrate.py`: Used to manually draw and configure per-lane polygons on a frame. Saves configuration to `config/rois.json`.
+- `connector.py`: The main stream processor. Can be run by camera name or ID. Captures frames, runs inference, tracks vehicles, and outputs to `data/connector_<camera_id>.jsonl`.
+- `train_yolo.py`: Script to train or fine-tune YOLO models.
+
+### 2. Backend API (`flowsense/`)
+The backend is structured as a FastAPI application with async database connections:
+- `flowsense/api_server/main.py`: FastAPI application entry point.
+- `flowsense/api_server/routes/`: Contains controllers for `cameras`, `detections`, `intersections`, `alerts`, `analytics`, and `health`.
+- `flowsense/api_server/schemas.py`: Pydantic schemas for data validation.
+- `flowsense/database/models.py`: SQLAlchemy models (`Camera`, `Detection`, `Intersection`, `TrafficSignal`, `User`, `Alert`) mapping to PostgreSQL with PostGIS geometry types.
+- `flowsense/database/database.py`: Async database session and engine setup.
+
+*Note: The backend structure is auto-generated and configured via `setup_backend.py`.*
+
+## Key Commands
+- **Install Requirements**: `pip install -r requirements.txt`
+- **Run Calibration**: `python calibrate.py --camera-id 30 --lanes "kota,ploso,demak,sekoe"`
+- **Run Connector**: `python connector.py --camera-id 30 --track`
+- **Run Tests**: `python -m pytest -q`
+
+## Deployment Context
+- Designed for edge deployment with lightweight JSON output.
+- Logs and output data are stored in `logs/` and `data/` respectively.
+- For production background execution, use `nohup python connector.py ... > logs/... &`.
+- Detailed deployment instructions are located in `DEPLOYMENT.md`.
+
+## Environment Variables
+Configured in `.env`:
+- `FLOWSENSE_API_KEY`: Required Kudus CCTV API Key
+- `FLOWSENSE_API_URL`: Camera list endpoint
+- `FLOWSENSE_MODEL`: YOLO weights path (default `yolo11n.pt`)
+- `DATABASE_URL`: PostgreSQL connection string (asyncpg)

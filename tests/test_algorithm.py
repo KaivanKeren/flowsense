@@ -59,11 +59,11 @@ def test_no_gap_out_before_min_green():
 
 def test_no_gap_out_unhealthy_camera():
     algo = TimeExtensionAlgorithm(min_green=10.0, max_green=50.0)
-    # Exceed min_green
+    # Exceed min_green, use queue_count=30 to increase effective_max_green to 50
     for _ in range(110):
-        algo.decide_yellow_transition(0.1, vehicles_detected=5, is_healthy=True)
+        algo.decide_yellow_transition(0.1, vehicles_detected=5, is_healthy=True, queue_count=30)
     # Zero vehicles but camera unhealthy → don't gap-out (failsafe)
-    should, reason = algo.decide_yellow_transition(0.1, vehicles_detected=0, is_healthy=False)
+    should, reason = algo.decide_yellow_transition(0.1, vehicles_detected=0, is_healthy=False, queue_count=30)
     assert should is False
 
 

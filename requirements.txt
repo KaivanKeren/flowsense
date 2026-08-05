@@ -2,3 +2,13 @@ ultralytics
 opencv-python
 numpy
 requests
+boto3
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+alembic
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+geoalchemy2
